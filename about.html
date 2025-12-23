@@ -10,6 +10,11 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+img, video, iframe {
+    max-width: 100%;
+    height: auto;
+}
+
 :root {
     --primary: #1A7F8E;
     --primary-light: #2A9FAF;
@@ -30,6 +35,8 @@ body {
     font-family: 'Nunito', sans-serif;
     color: var(--text-dark);
     line-height: 1.7;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
 }
 
 /* Language Toggle */
@@ -183,6 +190,8 @@ section {
 .container {
     max-width: 1100px;
     margin: 0 auto;
+    padding: 0 15px;
+    word-wrap: break-word;
 }
 
 .section-title {
@@ -663,39 +672,376 @@ footer a {
     .hero .tagline {
         font-size: 1.2rem;
     }
+    
+    .metronome-visual {
+        order: -1;
+        padding: 30px;
+    }
+    
+    .story-visual {
+        order: -1;
+    }
+    
+    .story-icon {
+        font-size: 5rem;
+    }
+    
+    .benefits-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .challenge-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 600px) {
+    /* Base typography */
+    body {
+        font-size: 16px;
+        line-height: 1.6;
+    }
+    
+    /* Hero Section */
     .hero {
-        padding: 100px 20px 60px;
+        padding: 80px 15px 50px;
+    }
+    
+    .hero-icon {
+        font-size: 3.5rem;
+        margin-bottom: 15px;
     }
     
     .hero h1 {
         font-size: 2rem;
+        margin-bottom: 8px;
     }
     
+    .hero .tagline {
+        font-size: 1rem;
+        margin-bottom: 15px;
+    }
+    
+    .hero .subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 25px;
+        padding: 0 10px;
+    }
+    
+    .hero-cta {
+        padding: 14px 35px;
+        font-size: 1rem;
+    }
+    
+    /* Sections */
     section {
-        padding: 60px 20px;
+        padding: 50px 15px;
+    }
+    
+    .container {
+        padding: 0 5px;
     }
     
     .section-title {
-        font-size: 2rem;
+        font-size: 1.6rem;
+        margin-bottom: 15px;
+    }
+    
+    .section-subtitle {
+        font-size: 1rem;
+        margin-bottom: 30px;
+        padding: 0 10px;
+    }
+    
+    /* Mission */
+    .mission {
+        padding: 40px 15px;
     }
     
     .mission-statement {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
+        padding: 0 5px;
     }
     
+    /* Challenge Cards */
+    .challenge-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .challenge-card {
+        padding: 25px 20px;
+        border-radius: 15px;
+    }
+    
+    .challenge-card .icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+    }
+    
+    .challenge-card h3 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+    
+    .challenge-card p {
+        font-size: 0.9rem;
+    }
+    
+    /* Metronome Section */
+    .metronome-content {
+        gap: 30px;
+    }
+    
+    .metronome-visual {
+        padding: 25px 15px;
+        border-radius: 20px;
+        margin: 0 -5px;
+    }
+    
+    .demo-tile {
+        width: 55px;
+        height: 55px;
+        border-radius: 12px;
+    }
+    
+    .metronome-demo {
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .metronome-beats {
+        font-size: 1.2rem;
+    }
+    
+    .metronome-text h3 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+    
+    .metronome-text p {
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+    }
+    
+    .metronome-features {
+        margin-top: 20px;
+    }
+    
+    .metronome-features li {
+        padding: 10px 0;
+        padding-left: 35px;
+        font-size: 0.9rem;
+    }
+    
+    .metronome-features li::before {
+        font-size: 1rem;
+    }
+    
+    /* Benefits */
+    .benefits-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .benefit-card {
+        padding: 25px 20px;
+        border-radius: 15px;
+    }
+    
+    .benefit-card .icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+    }
+    
+    .benefit-card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+    
+    .benefit-card p {
+        font-size: 0.9rem;
+    }
+    
+    /* Story Section */
+    .story-content {
+        gap: 30px;
+    }
+    
+    .story-icon {
+        font-size: 4rem;
+        margin-bottom: 15px;
+    }
+    
+    .story-quote {
+        font-size: 1.1rem;
+    }
+    
+    .story-text h3 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+    
+    .story-text p {
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+    }
+    
+    .story-highlight {
+        padding: 20px 15px;
+        margin: 20px 0;
+    }
+    
+    .story-highlight p {
+        font-size: 0.95rem;
+    }
+    
+    /* Transformation */
+    .transform-grid {
+        gap: 15px;
+        margin-top: 30px;
+    }
+    
+    .transform-column h4 {
+        font-size: 1rem;
+        margin-bottom: 15px;
+    }
+    
+    .transform-item {
+        padding: 12px 15px;
+        margin: 8px 0;
+        font-size: 0.95rem;
+        border-radius: 8px;
+    }
+    
+    .transform-arrow {
+        font-size: 2rem;
+        margin: 5px 0;
+    }
+    
+    /* Family Section */
+    .notification-demo {
+        padding: 20px 15px;
+        border-radius: 15px;
+        margin: 25px 10px;
+        max-width: 100%;
+    }
+    
+    .notification {
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 12px;
+    }
+    
+    .notification-header {
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+    
+    .notification-icon {
+        font-size: 1.2rem;
+    }
+    
+    .notification-app {
+        font-size: 0.8rem;
+    }
+    
+    .notification-time {
+        font-size: 0.7rem;
+    }
+    
+    .notification-body {
+        font-size: 0.95rem;
+    }
+    
+    .family-tagline {
+        font-size: 1.1rem;
+        margin-top: 20px;
+        padding: 0 10px;
+    }
+    
+    /* CTA Section */
+    .cta {
+        padding: 60px 15px;
+    }
+    
+    .cta h2 {
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+    }
+    
+    .cta p {
+        font-size: 1rem;
+        margin-bottom: 25px;
+    }
+    
+    .cta-btn {
+        padding: 16px 40px;
+        font-size: 1.1rem;
+    }
+    
+    /* Footer */
+    footer {
+        padding: 30px 15px;
+    }
+    
+    footer p {
+        font-size: 0.85rem;
+    }
+    
+    /* Navigation */
     .lang-toggle {
         top: 10px;
         right: 10px;
     }
     
+    .lang-btn {
+        padding: 6px 10px;
+        font-size: 0.75rem;
+    }
+    
     .nav-home {
         top: 10px;
         left: 10px;
-        padding: 8px 15px;
-        font-size: 0.8rem;
+        padding: 6px 12px;
+        font-size: 0.75rem;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 380px) {
+    .hero h1 {
+        font-size: 1.7rem;
+    }
+    
+    .hero .tagline {
+        font-size: 0.9rem;
+    }
+    
+    .section-title {
+        font-size: 1.4rem;
+    }
+    
+    .mission-statement {
+        font-size: 1.1rem;
+    }
+    
+    .demo-tile {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .challenge-card,
+    .benefit-card {
+        padding: 20px 15px;
+    }
+    
+    .cta h2 {
+        font-size: 1.5rem;
+    }
+    
+    .family-tagline {
+        font-size: 1rem;
     }
 }
 </style>
