@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: gostar-digital
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: DATABASE_PATH
+        value: /opt/render/project/data/gostar.db
+    disk:
+      name: gostar-data
+      mountPath: /opt/render/project/data
+      sizeGB: 1
