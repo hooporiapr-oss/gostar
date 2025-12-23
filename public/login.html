@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - GoStar Digital</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --primary: #1A7F8E;
+    --primary-light: #2A9FAF;
+    --secondary: #E8A848;
+    --bg-dark: #1a1a2e;
+    --bg-card: #16213e;
+    --text-light: #ffffff;
+    --danger: #fc8181;
+    --success: #68d391;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-card) 100%);
+    color: var(--text-light);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.login-container {
+    background: rgba(255,255,255,0.05);
+    border-radius: 25px;
+    padding: 50px 40px;
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.logo {
+    font-size: 4rem;
+    margin-bottom: 10px;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--secondary);
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 35px;
+    font-size: 1rem;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: rgba(255,255,255,0.9);
+    font-size: 0.9rem;
+}
+
+input {
+    width: 100%;
+    padding: 15px 18px;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    background: rgba(255,255,255,0.05);
+    color: white;
+    font-size: 1rem;
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--secondary);
+    background: rgba(255,255,255,0.1);
+}
+
+input::placeholder {
+    color: rgba(255,255,255,0.4);
+}
+
+.btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--secondary) 0%, #F0BC6A 100%);
+    border: none;
+    border-radius: 12px;
+    color: var(--bg-dark);
+    font-size: 1.1rem;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(232, 168, 72, 0.3);
+}
+
+.btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.error-message {
+    background: rgba(252, 129, 129, 0.2);
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    padding: 12px 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: none;
+}
+
+.error-message.show {
+    display: block;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 25px;
+    color: var(--primary-light);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.back-link:hover {
+    color: var(--secondary);
+}
+
+.contact-info {
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.5);
+}
+
+.contact-info a {
+    color: var(--secondary);
+    text-decoration: none;
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: 40px 25px;
+    }
+    
+    .logo {
+        font-size: 3rem;
+    }
+    
+    h1 {
+        font-size: 1.7rem;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="login-container">
+    <div class="logo">⭐</div>
+    <h1>GoStar</h1>
+    <p class="subtitle">Facility Login</p>
+    
+    <div class="error-message" id="errorMessage"></div>
+    
+    <form id="loginForm">
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="facility@example.com" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="••••••••" required>
+        </div>
+        
+        <button type="submit" class="btn" id="loginBtn">Sign In</button>
+    </form>
+    
+    <a href="/" class="back-link">← Back to Home</a>
+    
+    <div class="contact-info">
+        <p>Need access? Contact us at<br>
+        <a href="mailto:info@gostardigital.com">info@gostardigital.com</a></p>
+    </div>
+</div>
+
+<script>
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const btn = document.getElementById('loginBtn');
+    const errorDiv = document.getElementById('errorMessage');
+    
+    btn.disabled = true;
+    btn.textContent = 'Signing in...';
+    errorDiv.classList.remove('show');
+    
+    try {
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+            window.location.href = data.redirect || '/play';
+        } else {
+            errorDiv.textContent = data.error || 'Login failed';
+            errorDiv.classList.add('show');
+        }
+    } catch (err) {
+        errorDiv.textContent = 'Connection error. Please try again.';
+        errorDiv.classList.add('show');
+    }
+    
+    btn.disabled = false;
+    btn.textContent = 'Sign In';
+});
+
+// Check for URL error params
+const urlParams = new URLSearchParams(window.location.search);
+const error = urlParams.get('error');
+if (error) {
+    const errorDiv = document.getElementById('errorMessage');
+    if (error === 'expired') {
+        errorDiv.textContent = 'Your license has expired. Please contact us to renew.';
+    } else if (error === 'inactive') {
+        errorDiv.textContent = 'Your account is inactive. Please contact support.';
+    }
+    errorDiv.classList.add('show');
+}
+</script>
+
+</body>
+</html>
