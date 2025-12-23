@@ -98,11 +98,15 @@ async function initDatabase() {
     
     // Create default admin if not exists
     const adminCheck = db.exec("SELECT id FROM admin_users WHERE email = 'admin@gostardigital.com'");
+    console.log('Admin check result:', adminCheck);
     if (adminCheck.length === 0 || adminCheck[0].values.length === 0) {
         const hashedPassword = bcrypt.hashSync('GoStar2025!', 10);
         db.run("INSERT INTO admin_users (email, password, name) VALUES (?, ?, ?)", 
             ['admin@gostardigital.com', hashedPassword, 'GoStar Admin']);
         console.log('Default admin created: admin@gostardigital.com / GoStar2025!');
+        saveDatabase();
+    } else {
+        console.log('Admin already exists');
     }
     
     saveDatabase();
@@ -154,6 +158,9 @@ app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Trust proxy for Render
+app.set('trust proxy', 1);
+
 app.use(session({
     secret: process.env.SESSION_SECRET || 'gostar-secret-key-change-in-production',
     resave: false,
@@ -161,6 +168,7 @@ app.use(session({
     cookie: {
         secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
+        sameSite: 'lax',
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
 }));
@@ -343,7 +351,11 @@ app.get('/admin/login', (req, res) => {
 app.post('/api/admin/login', (req, res) => {
     const { email, password } = req.body;
     
+    console.log('Admin login attempt:', email);
+    
     const admin = dbGet('SELECT * FROM admin_users WHERE email = ?', [email]);
+    console.log('Admin found:', admin ? 'yes' : 'no');
+    
     if (admin && bcrypt.compareSync(password, admin.password)) {
         req.session.user = {
             type: 'admin',
@@ -351,9 +363,11 @@ app.post('/api/admin/login', (req, res) => {
             name: admin.name,
             email: admin.email
         };
+        console.log('Admin login successful');
         return res.json({ success: true, redirect: '/admin/dashboard' });
     }
     
+    console.log('Admin login failed');
     return res.status(401).json({ error: 'Invalid credentials' });
 });
 
