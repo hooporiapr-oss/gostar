@@ -1,74 +1,141 @@
 const express = require('express');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
-const Database = require('better-sqlite3');
+const initSqlJs = require('sql.js');
 const helmet = require('helmet');
 const compression = require('compression');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Database setup
-const db = new Database(process.env.DATABASE_PATH || './data/gostar.db');
+let db;
+const DB_PATH = process.env.DATABASE_PATH || './data/gostar.db';
 
-// Initialize database tables
-db.exec(`
-    CREATE TABLE IF NOT EXISTS facilities (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        email TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL,
-        license_tier TEXT DEFAULT 'trial',
-        resident_count INTEGER DEFAULT 0,
-        license_start DATE,
-        license_end DATE,
-        is_active INTEGER DEFAULT 1,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-    
-    CREATE TABLE IF NOT EXISTS staff (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        facility_id INTEGER NOT NULL,
-        name TEXT NOT NULL,
-        email TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL,
-        role TEXT DEFAULT 'staff',
-        is_active INTEGER DEFAULT 1,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (facility_id) REFERENCES facilities(id)
-    );
-    
-    CREATE TABLE IF NOT EXISTS sessions_log (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        facility_id INTEGER,
-        staff_id INTEGER,
-        game_type TEXT,
-        score INTEGER,
-        difficulty TEXT,
-        mode TEXT,
-        played_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-    
-    CREATE TABLE IF NOT EXISTS admin_users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL,
-        name TEXT NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-`);
+// Ensure data directory exists
+const dataDir = path.dirname(DB_PATH);
+if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+}
 
-// Create default admin if not exists
-const adminExists = db.prepare('SELECT id FROM admin_users WHERE email = ?').get('admin@gostardigital.com');
-if (!adminExists) {
-    const hashedPassword = bcrypt.hashSync('GoStar2025!', 10);
-    db.prepare('INSERT INTO admin_users (email, password, name) VALUES (?, ?, ?)').run(
-        'admin@gostardigital.com',
-        hashedPassword,
-        'GoStar Admin'
-    );
-    console.log('Default admin created: admin@gostardigital.com / GoStar2025!');
+// Save database to file
+function saveDatabase() {
+    if (db) {
+        const data = db.export();
+        const buffer = Buffer.from(data);
+        fs.writeFileSync(DB_PATH, buffer);
+    }
+}
+
+// Initialize database
+async function initDatabase() {
+    const SQL = await initSqlJs();
+    
+    // Load existing database or create new one
+    if (fs.existsSync(DB_PATH)) {
+        const fileBuffer = fs.readFileSync(DB_PATH);
+        db = new SQL.Database(fileBuffer);
+        console.log('Database loaded from file');
+    } else {
+        db = new SQL.Database();
+        console.log('New database created');
+    }
+    
+    // Initialize tables
+    db.run(`
+        CREATE TABLE IF NOT EXISTS facilities (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            license_tier TEXT DEFAULT 'trial',
+            resident_count INTEGER DEFAULT 0,
+            license_start TEXT,
+            license_end TEXT,
+            is_active INTEGER DEFAULT 1,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+    `);
+    
+    db.run(`
+        CREATE TABLE IF NOT EXISTS staff (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            facility_id INTEGER NOT NULL,
+            name TEXT NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            role TEXT DEFAULT 'staff',
+            is_active INTEGER DEFAULT 1,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (facility_id) REFERENCES facilities(id)
+        )
+    `);
+    
+    db.run(`
+        CREATE TABLE IF NOT EXISTS sessions_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            facility_id INTEGER,
+            staff_id INTEGER,
+            game_type TEXT,
+            score INTEGER,
+            difficulty TEXT,
+            mode TEXT,
+            played_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+    `);
+    
+    db.run(`
+        CREATE TABLE IF NOT EXISTS admin_users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            name TEXT NOT NULL,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+    `);
+    
+    // Create default admin if not exists
+    const adminCheck = db.exec("SELECT id FROM admin_users WHERE email = 'admin@gostardigital.com'");
+    if (adminCheck.length === 0 || adminCheck[0].values.length === 0) {
+        const hashedPassword = bcrypt.hashSync('GoStar2025!', 10);
+        db.run("INSERT INTO admin_users (email, password, name) VALUES (?, ?, ?)", 
+            ['admin@gostardigital.com', hashedPassword, 'GoStar Admin']);
+        console.log('Default admin created: admin@gostardigital.com / GoStar2025!');
+    }
+    
+    saveDatabase();
+}
+
+// Helper functions for database queries
+function dbGet(sql, params = []) {
+    const stmt = db.prepare(sql);
+    stmt.bind(params);
+    if (stmt.step()) {
+        const row = stmt.getAsObject();
+        stmt.free();
+        return row;
+    }
+    stmt.free();
+    return null;
+}
+
+function dbAll(sql, params = []) {
+    const stmt = db.prepare(sql);
+    stmt.bind(params);
+    const results = [];
+    while (stmt.step()) {
+        results.push(stmt.getAsObject());
+    }
+    stmt.free();
+    return results;
+}
+
+function dbRun(sql, params = []) {
+    db.run(sql, params);
+    saveDatabase();
+    return { lastInsertRowid: db.exec("SELECT last_insert_rowid()")[0]?.values[0]?.[0] };
 }
 
 // Middleware
@@ -108,9 +175,9 @@ function requireAuth(req, res, next) {
     if (req.session && req.session.user) {
         // Check license expiration for facility users
         if (req.session.user.type === 'facility' || req.session.user.type === 'staff') {
-            const facility = db.prepare('SELECT * FROM facilities WHERE id = ?').get(req.session.user.facilityId);
+            const facility = dbGet('SELECT * FROM facilities WHERE id = ?', [req.session.user.facilityId]);
             if (!facility || !facility.is_active) {
-                req.session.destroy();
+                req.session.destroy(() => {});
                 return res.redirect('/login?error=inactive');
             }
             if (facility.license_end && new Date(facility.license_end) < new Date()) {
@@ -166,7 +233,7 @@ app.post('/api/login', (req, res) => {
     }
     
     // Check facilities first
-    const facility = db.prepare('SELECT * FROM facilities WHERE email = ?').get(email);
+    const facility = dbGet('SELECT * FROM facilities WHERE email = ?', [email]);
     if (facility && bcrypt.compareSync(password, facility.password)) {
         if (!facility.is_active) {
             return res.status(403).json({ error: 'Account is inactive. Contact support.' });
@@ -187,12 +254,12 @@ app.post('/api/login', (req, res) => {
     }
     
     // Check staff
-    const staff = db.prepare(`
+    const staff = dbGet(`
         SELECT s.*, f.name as facility_name, f.is_active as facility_active, f.license_end 
         FROM staff s 
         JOIN facilities f ON s.facility_id = f.id 
         WHERE s.email = ?
-    `).get(email);
+    `, [email]);
     
     if (staff && bcrypt.compareSync(password, staff.password)) {
         if (!staff.is_active || !staff.facility_active) {
@@ -219,12 +286,12 @@ app.post('/api/login', (req, res) => {
 
 // Logout
 app.get('/logout', (req, res) => {
-    req.session.destroy();
+    req.session.destroy(() => {});
     res.redirect('/');
 });
 
 app.post('/api/logout', (req, res) => {
-    req.session.destroy();
+    req.session.destroy(() => {});
     res.json({ success: true });
 });
 
@@ -248,17 +315,17 @@ app.get('/api/me', requireAuth, (req, res) => {
 app.post('/api/log-session', requireAuth, (req, res) => {
     const { gameType, score, difficulty, mode } = req.body;
     
-    db.prepare(`
+    dbRun(`
         INSERT INTO sessions_log (facility_id, staff_id, game_type, score, difficulty, mode)
         VALUES (?, ?, ?, ?, ?, ?)
-    `).run(
+    `, [
         req.session.user.facilityId,
         req.session.user.type === 'staff' ? req.session.user.id : null,
         gameType || 'sequence-memory',
         score,
         difficulty,
         mode
-    );
+    ]);
     
     res.json({ success: true });
 });
@@ -276,7 +343,7 @@ app.get('/admin/login', (req, res) => {
 app.post('/api/admin/login', (req, res) => {
     const { email, password } = req.body;
     
-    const admin = db.prepare('SELECT * FROM admin_users WHERE email = ?').get(email);
+    const admin = dbGet('SELECT * FROM admin_users WHERE email = ?', [email]);
     if (admin && bcrypt.compareSync(password, admin.password)) {
         req.session.user = {
             type: 'admin',
@@ -296,10 +363,10 @@ app.get('/admin/dashboard', requireAdmin, (req, res) => {
 
 // Admin API - Get all facilities
 app.get('/api/admin/facilities', requireAdmin, (req, res) => {
-    const facilities = db.prepare(`
+    const facilities = dbAll(`
         SELECT id, name, email, license_tier, resident_count, license_start, license_end, is_active, created_at
         FROM facilities ORDER BY created_at DESC
-    `).all();
+    `);
     res.json({ facilities });
 });
 
@@ -311,16 +378,16 @@ app.post('/api/admin/facilities', requireAdmin, (req, res) => {
         return res.status(400).json({ error: 'Name, email, and password required' });
     }
     
-    const existing = db.prepare('SELECT id FROM facilities WHERE email = ?').get(email);
+    const existing = dbGet('SELECT id FROM facilities WHERE email = ?', [email]);
     if (existing) {
         return res.status(400).json({ error: 'Email already exists' });
     }
     
     const hashedPassword = bcrypt.hashSync(password, 10);
-    const result = db.prepare(`
+    const result = dbRun(`
         INSERT INTO facilities (name, email, password, license_tier, resident_count, license_start, license_end)
         VALUES (?, ?, ?, ?, ?, DATE('now'), ?)
-    `).run(name, email, hashedPassword, licenseTier || 'trial', residentCount || 0, licenseEnd || null);
+    `, [name, email, hashedPassword, licenseTier || 'trial', residentCount || 0, licenseEnd || null]);
     
     res.json({ success: true, id: result.lastInsertRowid });
 });
@@ -328,36 +395,42 @@ app.post('/api/admin/facilities', requireAdmin, (req, res) => {
 // Admin API - Update facility
 app.put('/api/admin/facilities/:id', requireAdmin, (req, res) => {
     const { name, licenseTier, residentCount, licenseEnd, isActive } = req.body;
+    const id = req.params.id;
     
-    db.prepare(`
-        UPDATE facilities 
-        SET name = COALESCE(?, name),
-            license_tier = COALESCE(?, license_tier),
-            resident_count = COALESCE(?, resident_count),
-            license_end = COALESCE(?, license_end),
-            is_active = COALESCE(?, is_active)
-        WHERE id = ?
-    `).run(name, licenseTier, residentCount, licenseEnd, isActive, req.params.id);
+    // Build update query dynamically
+    const updates = [];
+    const params = [];
+    
+    if (name !== undefined) { updates.push('name = ?'); params.push(name); }
+    if (licenseTier !== undefined) { updates.push('license_tier = ?'); params.push(licenseTier); }
+    if (residentCount !== undefined) { updates.push('resident_count = ?'); params.push(residentCount); }
+    if (licenseEnd !== undefined) { updates.push('license_end = ?'); params.push(licenseEnd); }
+    if (isActive !== undefined) { updates.push('is_active = ?'); params.push(isActive); }
+    
+    if (updates.length > 0) {
+        params.push(id);
+        dbRun(`UPDATE facilities SET ${updates.join(', ')} WHERE id = ?`, params);
+    }
     
     res.json({ success: true });
 });
 
 // Admin API - Delete facility
 app.delete('/api/admin/facilities/:id', requireAdmin, (req, res) => {
-    db.prepare('DELETE FROM staff WHERE facility_id = ?').run(req.params.id);
-    db.prepare('DELETE FROM facilities WHERE id = ?').run(req.params.id);
+    dbRun('DELETE FROM staff WHERE facility_id = ?', [req.params.id]);
+    dbRun('DELETE FROM facilities WHERE id = ?', [req.params.id]);
     res.json({ success: true });
 });
 
 // Admin API - Get usage stats
 app.get('/api/admin/stats', requireAdmin, (req, res) => {
-    const totalFacilities = db.prepare('SELECT COUNT(*) as count FROM facilities').get().count;
-    const activeFacilities = db.prepare('SELECT COUNT(*) as count FROM facilities WHERE is_active = 1').get().count;
-    const totalSessions = db.prepare('SELECT COUNT(*) as count FROM sessions_log').get().count;
-    const todaySessions = db.prepare(`
+    const totalFacilities = dbGet('SELECT COUNT(*) as count FROM facilities')?.count || 0;
+    const activeFacilities = dbGet('SELECT COUNT(*) as count FROM facilities WHERE is_active = 1')?.count || 0;
+    const totalSessions = dbGet('SELECT COUNT(*) as count FROM sessions_log')?.count || 0;
+    const todaySessions = dbGet(`
         SELECT COUNT(*) as count FROM sessions_log 
         WHERE DATE(played_at) = DATE('now')
-    `).get().count;
+    `)?.count || 0;
     
     res.json({
         totalFacilities,
@@ -380,13 +453,12 @@ app.use((err, req, res, next) => {
 
 // ============ START SERVER ============
 
-// Create data directory if not exists
-const fs = require('fs');
-if (!fs.existsSync('./data')) {
-    fs.mkdirSync('./data', { recursive: true });
-}
-
-app.listen(PORT, () => {
-    console.log(`⭐ GoStar Digital running on port ${PORT}`);
-    console.log(`   http://localhost:${PORT}`);
+initDatabase().then(() => {
+    app.listen(PORT, () => {
+        console.log(`⭐ GoStar Digital running on port ${PORT}`);
+        console.log(`   http://localhost:${PORT}`);
+    });
+}).catch(err => {
+    console.error('Failed to initialize database:', err);
+    process.exit(1);
 });
