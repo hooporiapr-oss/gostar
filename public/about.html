@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About GoStar - Cognitive Wellness Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+img, video, iframe {
+    max-width: 100%;
+    height: auto;
+}
+
+:root {
+    --primary: #1A7F8E;
+    --primary-light: #2A9FAF;
+    --primary-dark: #156570;
+    --secondary: #E8A848;
+    --secondary-light: #F0BC6A;
+    --accent: #FDF8F0;
+    --bg-dark: #1a1a2e;
+    --bg-card: #16213e;
+    --text-light: #ffffff;
+    --text-dark: #2d3748;
+    --text-muted: #718096;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: 'Nunito', sans-serif;
+    color: var(--text-dark);
+    line-height: 1.7;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+}
+
+/* Language Toggle */
+body[data-lang="es"] .lang-en { display: none; }
+body[data-lang="en"] .lang-es { display: none; }
+body[data-lang="es"] .lang-es { display: inline; }
+body[data-lang="en"] .lang-en { display: inline; }
+body[data-lang="es"] .lang-es-block { display: block; }
+body[data-lang="en"] .lang-es-block { display: none; }
+body[data-lang="es"] .lang-en-block { display: none; }
+body[data-lang="en"] .lang-en-block { display: block; }
+
+.lang-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 6px;
+    z-index: 1000;
+}
+
+.lang-btn {
+    padding: 8px 14px;
+    border: 2px solid white;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border-radius: 20px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.lang-btn:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+.lang-btn.active {
+    background: white;
+    color: var(--primary);
+}
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-card) 100%);
+    color: white;
+    padding: 120px 20px 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(26, 127, 142, 0.1) 0%, transparent 70%);
+    animation: pulse-bg 10s ease-in-out infinite;
+}
+
+@keyframes pulse-bg {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.hero-icon {
+    font-size: 5rem;
+    margin-bottom: 20px;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    font-weight: 900;
+    margin-bottom: 10px;
+    color: var(--secondary);
+}
+
+.hero .tagline {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-light);
+    margin-bottom: 25px;
+}
+
+.hero .subtitle {
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.8);
+    max-width: 700px;
+    margin: 0 auto 40px;
+}
+
+.hero-cta {
+    display: inline-block;
+    padding: 18px 50px;
+    background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
+    color: var(--bg-dark);
+    font-size: 1.2rem;
+    font-weight: 800;
+    text-decoration: none;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.hero-cta:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(232, 168, 72, 0.4);
+}
+
+/* Navigation */
+.nav-home {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    padding: 10px 20px;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.nav-home:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+/* Sections */
+section {
+    padding: 80px 20px;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 15px;
+    word-wrap: break-word;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--primary);
+}
+
+.section-subtitle {
+    font-size: 1.2rem;
+    text-align: center;
+    color: var(--text-muted);
+    max-width: 700px;
+    margin: 0 auto 50px;
+}
+
+/* Mission Section */
+.mission {
+    background: var(--accent);
+}
+
+.mission-statement {
+    font-size: 2rem;
+    font-weight: 800;
+    text-align: center;
+    color: var(--primary-dark);
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.5;
+}
+
+.mission-statement span {
+    color: var(--secondary);
+}
+
+/* The Challenge Section */
+.challenge {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+}
+
+.challenge .section-title {
+    color: white;
+}
+
+.challenge .section-subtitle {
+    color: rgba(255,255,255,0.8);
+}
+
+.challenge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.challenge-card {
+    background: rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 35px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.challenge-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255,255,255,0.15);
+}
+
+.challenge-card .icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.challenge-card h3 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+    color: var(--secondary);
+}
+
+.challenge-card p {
+    color: rgba(255,255,255,0.9);
+    line-height: 1.6;
+}
+
+/* Metronome Section */
+.metronome {
+    background: white;
+}
+
+.metronome-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.metronome-visual {
+    background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-card) 100%);
+    border-radius: 30px;
+    padding: 50px;
+    text-align: center;
+}
+
+.metronome-demo {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.demo-tile {
+    width: 70px;
+    height: 70px;
+    border-radius: 15px;
+    animation: pulse-tile 2s ease-in-out infinite;
+}
+
+.demo-tile:nth-child(1) { background: #e53e3e; animation-delay: 0s; }
+.demo-tile:nth-child(2) { background: #3182ce; animation-delay: 0.5s; }
+.demo-tile:nth-child(3) { background: #38a169; animation-delay: 1s; }
+.demo-tile:nth-child(4) { background: #d69e2e; animation-delay: 1.5s; }
+
+@keyframes pulse-tile {
+    0%, 100% { transform: scale(1); opacity: 0.7; }
+    50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 30px currentColor; }
+}
+
+.metronome-beats {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.metronome-beats span {
+    display: inline-block;
+    animation: beat 2s ease-in-out infinite;
+}
+
+.metronome-beats span:nth-child(1) { animation-delay: 0s; }
+.metronome-beats span:nth-child(2) { animation-delay: 0.5s; }
+.metronome-beats span:nth-child(3) { animation-delay: 1s; }
+.metronome-beats span:nth-child(4) { animation-delay: 1.5s; }
+
+@keyframes beat {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+.metronome-text h3 {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--primary);
+    margin-bottom: 20px;
+}
+
+.metronome-text p {
+    margin-bottom: 20px;
+    color: var(--text-dark);
+}
+
+.metronome-features {
+    list-style: none;
+    margin-top: 30px;
+}
+
+.metronome-features li {
+    padding: 12px 0;
+    padding-left: 40px;
+    position: relative;
+    font-weight: 600;
+}
+
+.metronome-features li::before {
+    content: '🎵';
+    position: absolute;
+    left: 0;
+    font-size: 1.2rem;
+}
+
+/* Benefits Section */
+.benefits {
+    background: var(--accent);
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.benefit-card {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.benefit-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+}
+
+.benefit-card .icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.benefit-card h3 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 15px;
+}
+
+.benefit-card p {
+    color: var(--text-muted);
+}
+
+/* Story Section */
+.story {
+    background: white;
+}
+
+.story-content {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.story-visual {
+    text-align: center;
+}
+
+.story-icon {
+    font-size: 8rem;
+    margin-bottom: 20px;
+}
+
+.story-quote {
+    font-size: 1.3rem;
+    font-style: italic;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.story-text h3 {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--primary);
+    margin-bottom: 25px;
+}
+
+.story-text p {
+    margin-bottom: 20px;
+    color: var(--text-dark);
+}
+
+.story-highlight {
+    background: var(--accent);
+    border-left: 4px solid var(--secondary);
+    padding: 25px;
+    border-radius: 0 15px 15px 0;
+    margin: 30px 0;
+}
+
+.story-highlight p {
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin: 0;
+}
+
+/* Transformation Section */
+.transformation {
+    background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-card) 100%);
+    color: white;
+}
+
+.transformation .section-title {
+    color: var(--secondary);
+}
+
+.transformation .section-subtitle {
+    color: rgba(255,255,255,0.8);
+}
+
+.transform-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 40px;
+    align-items: center;
+    margin-top: 50px;
+}
+
+.transform-column {
+    text-align: center;
+}
+
+.transform-column h4 {
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin-bottom: 25px;
+    color: var(--text-muted);
+}
+
+.transform-column.before h4 {
+    color: #fc8181;
+}
+
+.transform-column.after h4 {
+    color: var(--success, #68d391);
+}
+
+.transform-item {
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.transform-column.before .transform-item {
+    background: rgba(252, 129, 129, 0.2);
+    color: #feb2b2;
+}
+
+.transform-column.after .transform-item {
+    background: rgba(104, 211, 145, 0.2);
+    color: #9ae6b4;
+}
+
+.transform-arrow {
+    font-size: 3rem;
+    color: var(--secondary);
+}
+
+/* Family Section */
+.family {
+    background: var(--accent);
+}
+
+.family-content {
+    text-align: center;
+}
+
+.notification-demo {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 500px;
+    margin: 40px auto;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+}
+
+.notification {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+.notification-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.notification-icon {
+    font-size: 1.5rem;
+}
+
+.notification-app {
+    font-weight: 800;
+    font-size: 0.9rem;
+}
+
+.notification-time {
+    margin-left: auto;
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.notification-body {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.family-tagline {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin-top: 30px;
+}
+
+/* CTA Section */
+.cta {
+    background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
+    text-align: center;
+    padding: 100px 20px;
+}
+
+.cta h2 {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--bg-dark);
+    margin-bottom: 20px;
+}
+
+.cta p {
+    font-size: 1.2rem;
+    color: var(--bg-dark);
+    opacity: 0.8;
+    margin-bottom: 40px;
+}
+
+.cta-btn {
+    display: inline-block;
+    padding: 20px 60px;
+    background: var(--bg-dark);
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 800;
+    text-decoration: none;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.cta-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+}
+
+/* Footer */
+footer {
+    background: var(--bg-dark);
+    color: white;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+footer p {
+    color: rgba(255,255,255,0.6);
+}
+
+footer a {
+    color: var(--secondary);
+    text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .metronome-content,
+    .story-content,
+    .transform-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .transform-grid {
+        gap: 20px;
+    }
+    
+    .transform-arrow {
+        transform: rotate(90deg);
+    }
+    
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero .tagline {
+        font-size: 1.2rem;
+    }
+    
+    .metronome-visual {
+        order: -1;
+        padding: 30px;
+    }
+    
+    .story-visual {
+        order: -1;
+    }
+    
+    .story-icon {
+        font-size: 5rem;
+    }
+    
+    .benefits-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .challenge-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    /* Base typography */
+    body {
+        font-size: 16px;
+        line-height: 1.6;
+    }
+    
+    /* Hero Section */
+    .hero {
+        padding: 80px 15px 50px;
+    }
+    
+    .hero-icon {
+        font-size: 3.5rem;
+        margin-bottom: 15px;
+    }
+    
+    .hero h1 {
+        font-size: 2rem;
+        margin-bottom: 8px;
+    }
+    
+    .hero .tagline {
+        font-size: 1rem;
+        margin-bottom: 15px;
+    }
+    
+    .hero .subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 25px;
+        padding: 0 10px;
+    }
+    
+    .hero-cta {
+        padding: 14px 35px;
+        font-size: 1rem;
+    }
+    
+    /* Sections */
+    section {
+        padding: 50px 15px;
+    }
+    
+    .container {
+        padding: 0 5px;
+    }
+    
+    .section-title {
+        font-size: 1.6rem;
+        margin-bottom: 15px;
+    }
+    
+    .section-subtitle {
+        font-size: 1rem;
+        margin-bottom: 30px;
+        padding: 0 10px;
+    }
+    
+    /* Mission */
+    .mission {
+        padding: 40px 15px;
+    }
+    
+    .mission-statement {
+        font-size: 1.2rem;
+        padding: 0 5px;
+    }
+    
+    /* Challenge Cards */
+    .challenge-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .challenge-card {
+        padding: 25px 20px;
+        border-radius: 15px;
+    }
+    
+    .challenge-card .icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+    }
+    
+    .challenge-card h3 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+    
+    .challenge-card p {
+        font-size: 0.9rem;
+    }
+    
+    /* Metronome Section */
+    .metronome-content {
+        gap: 30px;
+    }
+    
+    .metronome-visual {
+        padding: 25px 15px;
+        border-radius: 20px;
+        margin: 0 -5px;
+    }
+    
+    .demo-tile {
+        width: 55px;
+        height: 55px;
+        border-radius: 12px;
+    }
+    
+    .metronome-demo {
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .metronome-beats {
+        font-size: 1.2rem;
+    }
+    
+    .metronome-text h3 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+    
+    .metronome-text p {
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+    }
+    
+    .metronome-features {
+        margin-top: 20px;
+    }
+    
+    .metronome-features li {
+        padding: 10px 0;
+        padding-left: 35px;
+        font-size: 0.9rem;
+    }
+    
+    .metronome-features li::before {
+        font-size: 1rem;
+    }
+    
+    /* Benefits */
+    .benefits-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .benefit-card {
+        padding: 25px 20px;
+        border-radius: 15px;
+    }
+    
+    .benefit-card .icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+    }
+    
+    .benefit-card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+    
+    .benefit-card p {
+        font-size: 0.9rem;
+    }
+    
+    /* Story Section */
+    .story-content {
+        gap: 30px;
+    }
+    
+    .story-icon {
+        font-size: 4rem;
+        margin-bottom: 15px;
+    }
+    
+    .story-quote {
+        font-size: 1.1rem;
+    }
+    
+    .story-text h3 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+    
+    .story-text p {
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+    }
+    
+    .story-highlight {
+        padding: 20px 15px;
+        margin: 20px 0;
+    }
+    
+    .story-highlight p {
+        font-size: 0.95rem;
+    }
+    
+    /* Transformation */
+    .transform-grid {
+        gap: 15px;
+        margin-top: 30px;
+    }
+    
+    .transform-column h4 {
+        font-size: 1rem;
+        margin-bottom: 15px;
+    }
+    
+    .transform-item {
+        padding: 12px 15px;
+        margin: 8px 0;
+        font-size: 0.95rem;
+        border-radius: 8px;
+    }
+    
+    .transform-arrow {
+        font-size: 2rem;
+        margin: 5px 0;
+    }
+    
+    /* Family Section */
+    .notification-demo {
+        padding: 20px 15px;
+        border-radius: 15px;
+        margin: 25px 10px;
+        max-width: 100%;
+    }
+    
+    .notification {
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 12px;
+    }
+    
+    .notification-header {
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+    
+    .notification-icon {
+        font-size: 1.2rem;
+    }
+    
+    .notification-app {
+        font-size: 0.8rem;
+    }
+    
+    .notification-time {
+        font-size: 0.7rem;
+    }
+    
+    .notification-body {
+        font-size: 0.95rem;
+    }
+    
+    .family-tagline {
+        font-size: 1.1rem;
+        margin-top: 20px;
+        padding: 0 10px;
+    }
+    
+    /* CTA Section */
+    .cta {
+        padding: 60px 15px;
+    }
+    
+    .cta h2 {
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+    }
+    
+    .cta p {
+        font-size: 1rem;
+        margin-bottom: 25px;
+    }
+    
+    .cta-btn {
+        padding: 16px 40px;
+        font-size: 1.1rem;
+    }
+    
+    /* Footer */
+    footer {
+        padding: 30px 15px;
+    }
+    
+    footer p {
+        font-size: 0.85rem;
+    }
+    
+    /* Navigation */
+    .lang-toggle {
+        top: 10px;
+        right: 10px;
+    }
+    
+    .lang-btn {
+        padding: 6px 10px;
+        font-size: 0.75rem;
+    }
+    
+    .nav-home {
+        top: 10px;
+        left: 10px;
+        padding: 6px 12px;
+        font-size: 0.75rem;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 380px) {
+    .hero h1 {
+        font-size: 1.7rem;
+    }
+    
+    .hero .tagline {
+        font-size: 0.9rem;
+    }
+    
+    .section-title {
+        font-size: 1.4rem;
+    }
+    
+    .mission-statement {
+        font-size: 1.1rem;
+    }
+    
+    .demo-tile {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .challenge-card,
+    .benefit-card {
+        padding: 20px 15px;
+    }
+    
+    .cta h2 {
+        font-size: 1.5rem;
+    }
+    
+    .family-tagline {
+        font-size: 1rem;
+    }
+}
+</style>
+</head>
+<body data-lang="en">
+
+<a href="index.html" class="nav-home">
+    <span class="lang-en">← Home</span>
+    <span class="lang-es">← Inicio</span>
+</a>
+
+<div class="lang-toggle">
+    <button class="lang-btn active" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" onclick="setLang('es')">ES</button>
+</div>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-icon">🧠</div>
+        <h1>GoStar</h1>
+        <p class="tagline">
+            <span class="lang-en">Metronome Sequence Memory Training</span>
+            <span class="lang-es">Entrenamiento de Memoria con Secuencias de Metrónomo</span>
+        </p>
+        <p class="subtitle">
+            <span class="lang-en">Train your memory like a pro. Every day. With rhythm, purpose, and measurable progress.</span>
+            <span class="lang-es">Entrena tu memoria como un profesional. Cada día. Con ritmo, propósito y progreso medible.</span>
+        </p>
+        <a href="/login" class="hero-cta">
+            <span class="lang-en">Start Training</span>
+            <span class="lang-es">Comenzar Entrenamiento</span>
+        </a>
+    </div>
+</section>
+
+<!-- Mission Section -->
+<section class="mission">
+    <div class="container">
+        <p class="mission-statement">
+            <span class="lang-en">"We're <span>turning nursing homes into training arenas</span> — where every resident is an athlete, every day is game day, and every family becomes a team of cheerleaders."</span>
+            <span class="lang-es">"Estamos <span>convirtiendo hogares de ancianos en arenas de entrenamiento</span> — donde cada residente es un atleta, cada día es día de juego, y cada familia se convierte en un equipo de animadores."</span>
+        </p>
+    </div>
+</section>
+
+<!-- The Challenge Section -->
+<section class="challenge">
+    <div class="container">
+        <h2 class="section-title">
+            <span class="lang-en">The Sequence Memory Challenge</span>
+            <span class="lang-es">El Desafío de Memoria de Secuencias</span>
+        </h2>
+        <p class="section-subtitle">
+            <span class="lang-en">A complete cognitive training experience in 4 quarters</span>
+            <span class="lang-es">Una experiencia completa de entrenamiento cognitivo en 4 cuartos</span>
+        </p>
+        
+        <div class="challenge-grid">
+            <div class="challenge-card">
+                <div class="icon">🎯</div>
+                <h3>
+                    <span class="lang-en">4 Quarters</span>
+                    <span class="lang-es">4 Cuartos</span>
+                </h3>
+                <p>
+                    <span class="lang-en">Each session progresses through 4 quarters of increasing challenge. Warm up, build momentum, face the challenge, and finish strong in clutch time.</span>
+                    <span class="lang-es">Cada sesión progresa a través de 4 cuartos de dificultad creciente. Calienta, toma impulso, enfrenta el desafío y termina fuerte en tiempo decisivo.</span>
+                </p>
+            </div>
+            
+            <div class="challenge-card">
+                <div class="icon">🎨</div>
+                <h3>
+                    <span class="lang-en">Multiple Modes</span>
+                    <span class="lang-es">Múltiples Modos</span>
+                </h3>
+                <p>
+                    <span class="lang-en">Train with Colors, Numbers, Animals, or Speed mode. Same brain exercise, different themes — the game never gets repetitive.</span>
+                    <span class="lang-es">Entrena con Colores, Números, Animales o modo Velocidad. El mismo ejercicio cerebral, diferentes temas — el juego nunca se vuelve repetitivo.</span>
+                </p>
+            </div>
+            
+            <div class="challenge-card">
+                <div class="icon">🌱</div>
+                <h3>
+                    <span class="lang-en">3 Difficulty Levels</span>
+                    <span class="lang-es">3 Niveles de Dificultad</span>
+                </h3>
+                <p>
+                    <span class="lang-en">Gentle mode for memory care residents. Standard for everyday training. Pro for those ready to push their limits.</span>
+                    <span class="lang-es">Modo Suave para residentes de cuidado de memoria. Normal para entrenamiento diario. Pro para quienes están listos para superar sus límites.</span>
+                </p>
+            </div>
+            
+            <div class="challenge-card">
+                <div class="icon">🏆</div>
+                <h3>
+                    <span class="lang-en">Track Your Progress</span>
+                    <span class="lang-es">Sigue Tu Progreso</span>
+                </h3>
+                <p>
+                    <span class="lang-en">Personal bests, daily streaks, quarter-by-quarter scoring. Watch yourself improve over time with measurable results.</span>
+                    <span class="lang-es">Mejores puntuaciones personales, rachas diarias, puntuación por cuarto. Observa tu mejora con el tiempo con resultados medibles.</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Metronome Section -->
+<section class="metronome">
+    <div class="container">
+        <div class="metronome-content">
+            <div class="metronome-visual">
+                <div class="metronome-demo">
+                    <div class="demo-tile"></div>
+                    <div class="demo-tile"></div>
+                    <div class="demo-tile"></div>
+                    <div class="demo-tile"></div>
+                </div>
+                <div class="metronome-beats">
+                    <span>♩</span> <span>♩</span> <span>♩</span> <span>♩</span>
+                </div>
+            </div>
+            
+            <div class="metronome-text">
+                <h3>
+                    <span class="lang-en">The Metronome Difference</span>
+                    <span class="lang-es">La Diferencia del Metrónomo</span>
+                </h3>
+                <p>
+                    <span class="lang-en">This isn't just a memory game. It's <strong>rhythm-based cognitive training</strong>. Each tile plays a musical tone. Each sequence becomes a melody. Your brain doesn't just see the pattern — it <em>hears</em> it, <em>feels</em> it, and <em>responds</em> to it.</span>
+                    <span class="lang-es">Esto no es solo un juego de memoria. Es <strong>entrenamiento cognitivo basado en ritmo</strong>. Cada ficha toca un tono musical. Cada secuencia se convierte en una melodía. Tu cerebro no solo ve el patrón — lo <em>escucha</em>, lo <em>siente</em> y <em>responde</em> a él.</span>
+                </p>
+                <p>
+                    <span class="lang-en">The countdown builds anticipation. The tempo sets your pace. The success chime celebrates your wins. Every element is designed to engage your brain on multiple levels.</span>
+                    <span class="lang-es">La cuenta regresiva crea anticipación. El tempo establece tu ritmo. El sonido de éxito celebra tus victorias. Cada elemento está diseñado para involucrar tu cerebro en múltiples niveles.</span>
+                </p>
+                
+                <ul class="metronome-features">
+                    <li>
+                        <span class="lang-en">3-2-1-GO! countdown prepares your focus</span>
+                        <span class="lang-es">¡3-2-1-YA! la cuenta regresiva prepara tu enfoque</span>
+                    </li>
+                    <li>
+                        <span class="lang-en">Musical tones (C-E-G-C) create memorable melodies</span>
+                        <span class="lang-es">Tonos musicales (C-E-G-C) crean melodías memorables</span>
+                    </li>
+                    <li>
+                        <span class="lang-en">3 tempo settings: Relaxed (60 BPM), Steady (90 BPM), Upbeat (120 BPM)</span>
+                        <span class="lang-es">3 configuraciones de tempo: Relajado (60 BPM), Estable (90 BPM), Rápido (120 BPM)</span>
+                    </li>
+                    <li>
+                        <span class="lang-en">Victory arpeggio rewards every completed sequence</span>
+                        <span class="lang-es">Arpegio de victoria recompensa cada secuencia completada</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="benefits">
+    <div class="container">
+        <h2 class="section-title">
+            <span class="lang-en">Benefits of Daily Training</span>
+            <span class="lang-es">Beneficios del Entrenamiento Diario</span>
+        </h2>
+        <p class="section-subtitle">
+            <span class="lang-en">Cognitive wellness isn't a destination — it's a daily practice</span>
+            <span class="lang-es">El bienestar cognitivo no es un destino — es una práctica diaria</span>
+        </p>
+        
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <div class="icon">🧠</div>
+                <h3>
+                    <span class="lang-en">Working Memory Exercise</span>
+                    <span class="lang-es">Ejercicio de Memoria de Trabajo</span>
+                </h3>
+                <p>
+                    <span class="lang-en">Sequence recall directly exercises the brain's working memory — the cognitive system responsible for temporarily holding and processing information.</span>
+                    <span class="lang-es">El recuerdo de secuencias ejercita directamente la memoria de trabajo del cerebro — el sistema cognitivo responsable de retener y procesar información temporalmente.</span>
+                </p>
+            </div>
+            
+            <div class="benefit-card">
+                <div class="icon">🎵</div>
+                <h3>
+                    <span class="lang-en">Multi-Sensory Engagement</span>
+                    <span class="lang-es">Compromiso Multi-Sensorial</span>
+                </h3>
+                <p>
+                    <span class="lang-en">Visual patterns combined with audio cues engage multiple brain pathways simultaneously, creating stronger memory connections.</span>
+                    <span class="lang-es">Los patrones visuales combinados con señales de audio involucran múltiples vías cerebrales simultáneamente, creando conexiones de memoria más fuertes.</span>
+                </p>
+            </div>
+            
+            <div class="benefit-card">
+                <div class="icon">📈</div>
+                <h3>
+                    <span class="lang-en">Measurable Progress</span>
+                    <span class="lang-es">Progreso Medible</span>
+                </h3>
+                <p>
+                    <span class="lang-en">Track personal bests, maintain streaks, and watch quarter-by-quarter improvements. Data-driven motivation for continuous growth.</span>
+                    <span class="lang-es">Sigue tus mejores puntuaciones personales, mantén rachas y observa mejoras cuarto a cuarto. Motivación basada en datos para crecimiento continuo.</span>
+                </p>
+            </div>
+            
+            <div class="benefit-card">
+                <div class="icon">😊</div>
+                <h3>
+                    <span class="lang-en">Positive Reinforcement</span>
+                    <span class="lang-es">Refuerzo Positivo</span>
+                </h3>
+                <p>
+                    <span class="lang-en">Success sounds, encouraging messages, and celebration screens create a rewarding experience that residents want to return to daily.</span>
+                    <span class="lang-es">Sonidos de éxito, mensajes alentadores y pantallas de celebración crean una experiencia gratificante a la que los residentes quieren regresar diariamente.</span>
+                </p>
+            </div>
+            
+            <div class="benefit-card">
+                <div class="icon">🔄</div>
+                <h3>
+                    <span class="lang-en">Consistent Routine</span>
+                    <span class="lang-es">Rutina Consistente</span>
+                </h3>
+                <p>
+                    <span class="lang-en">Daily streak tracking encourages routine formation — a key factor in cognitive health and overall wellbeing for seniors.</span>
+                    <span class="lang-es">El seguimiento de rachas diarias fomenta la formación de rutinas — un factor clave en la salud cognitiva y el bienestar general de los adultos mayores.</span>
+                </p>
+            </div>
+            
+            <div class="benefit-card">
+                <div class="icon">❤️</div>
+                <h3>
+                    <span class="lang-en">Family Connection</span>
+                    <span class="lang-es">Conexión Familiar</span>
+                </h3>
+                <p>
+                    <span class="lang-en">Share scores with family members, celebrate achievements together, and transform worry into cheering.</span>
+                    <span class="lang-es">Comparte puntuaciones con familiares, celebren logros juntos y transformen la preocupación en celebración.</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Story Section -->
+<section class="story">
+    <div class="container">
+        <div class="story-content">
+            <div class="story-visual">
+                <div class="story-icon">🏀</div>
+                <p class="story-quote">
+                    <span class="lang-en">"Memory is the playbook of life."</span>
+                    <span class="lang-es">"La memoria es el libro de jugadas de la vida."</span>
+                </p>
+            </div>
+            
+            <div class="story-text">
+                <h3>
+                    <span class="lang-en">From the Court to Cognitive Care</span>
+                    <span class="lang-es">De la Cancha al Cuidado Cognitivo</span>
+                </h3>
+                <p>
+                    <span class="lang-en">GoStar was founded by a former professional basketball player who understood one fundamental truth: <strong>memory is the foundation of everything.</strong></span>
+                    <span class="lang-es">GoStar fue fundado por un ex jugador profesional de baloncesto que entendió una verdad fundamental: <strong>la memoria es la base de todo.</strong></span>
+                </p>
+                <p>
+                    <span class="lang-en">"Coaches would test us on plays constantly. The best players weren't always the most athletic — they were the ones who could remember, react, and execute. Every practice, every game, we trained our memory through repetition and rhythm."</span>
+                    <span class="lang-es">"Los entrenadores nos probaban constantemente con jugadas. Los mejores jugadores no siempre eran los más atléticos — eran los que podían recordar, reaccionar y ejecutar. Cada práctica, cada juego, entrenábamos nuestra memoria a través de la repetición y el ritmo."</span>
+                </p>
+                
+                <div class="story-highlight">
+                    <p>
+                        <span class="lang-en">That same discipline — the metronome of practice, the rhythm of drills, the joy of improvement — now powers GoStar's approach to cognitive wellness.</span>
+                        <span class="lang-es">Esa misma disciplina — el metrónomo de la práctica, el ritmo de los ejercicios, la alegría de la mejora — ahora impulsa el enfoque de GoStar hacia el bienestar cognitivo.</span>
+                    </p>
+                </div>
+                
+                <p>
+                    <span class="lang-en">We believe seniors deserve the same quality of training that elite athletes receive. Not just activities to pass time — but purposeful, measurable, rhythmic training that builds cognitive strength every single day.</span>
+                    <span class="lang-es">Creemos que los adultos mayores merecen la misma calidad de entrenamiento que reciben los atletas de élite. No solo actividades para pasar el tiempo — sino entrenamiento con propósito, medible y rítmico que construye fortaleza cognitiva cada día.</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Transformation Section -->
+<section class="transformation">
+    <div class="container">
+        <h2 class="section-title">
+            <span class="lang-en">The Transformation</span>
+            <span class="lang-es">La Transformación</span>
+        </h2>
+        <p class="section-subtitle">
+            <span class="lang-en">From passive care to active training</span>
+            <span class="lang-es">Del cuidado pasivo al entrenamiento activo</span>
+        </p>
+        
+        <div class="transform-grid">
+            <div class="transform-column before">
+                <h4>
+                    <span class="lang-en">Before</span>
+                    <span class="lang-es">Antes</span>
+                </h4>
+                <div class="transform-item">
+                    <span class="lang-en">Residents</span>
+                    <span class="lang-es">Residentes</span>
+                </div>
+                <div class="transform-item">
+                    <span class="lang-en">Activities</span>
+                    <span class="lang-es">Actividades</span>
+                </div>
+                <div class="transform-item">
+                    <span class="lang-en">Passing Time</span>
+                    <span class="lang-es">Pasar el Tiempo</span>
+                </div>
+                <div class="transform-item">
+                    <span class="lang-en">Decline</span>
+                    <span class="lang-es">Declive</span>
+                </div>
+                <div class="transform-item">
+                    <span class="lang-en">Family Worry</span>
+                    <span class="lang-es">Preocupación Familiar</span>
+                </div>
+            </div>
+            
+            <div class="transform-arrow">→</div>
+            
+            <div class="transform-column after">
+                <h4>
+                    <span class="lang-en">After GoStar</span>
+                    <span class="lang-es">Después de GoStar</span>
+                </h4>
+                <div class="transform-item">
+                    <span class="lang-en">Athletes</span>
+                    <span class="lang-es">Atletas</span>
+                </div>
+                <div class="transform-item">
+                    <span class="lang-en">Training</span>
+                    <span class="lang-es">Entrenamiento</span>
+                </div>
+                <div class="transform-item">
+                    <span class="lang-en">Building Streaks</span>
+                    <span class="lang-es">Construyendo Rachas</span>
+                </div>
+                <div class="transform-item">
+                    <span class="lang-en">Progress</span>
+                    <span class="lang-es">Progreso</span>
+                </div>
+                <div class="transform-item">
+                    <span class="lang-en">Family Cheering</span>
+                    <span class="lang-es">Familia Celebrando</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Family Section -->
+<section class="family">
+    <div class="container">
+        <div class="family-content">
+            <h2 class="section-title">
+                <span class="lang-en">Families Become Cheerleaders</span>
+                <span class="lang-es">Las Familias se Convierten en Animadores</span>
+            </h2>
+            <p class="section-subtitle">
+                <span class="lang-en">Transform concern into celebration with shareable progress</span>
+                <span class="lang-es">Transforma la preocupación en celebración con progreso compartible</span>
+            </p>
+            
+            <div class="notification-demo">
+                <div class="notification">
+                    <div class="notification-header">
+                        <span class="notification-icon">🧠</span>
+                        <span class="notification-app">GoStar</span>
+                        <span class="notification-time">
+                            <span class="lang-en">now</span>
+                            <span class="lang-es">ahora</span>
+                        </span>
+                    </div>
+                    <div class="notification-body">
+                        <span class="lang-en">🏆 Maria scored 52 points today! Her 7-day winning streak continues!</span>
+                        <span class="lang-es">🏆 ¡María anotó 52 puntos hoy! ¡Su racha ganadora de 7 días continúa!</span>
+                    </div>
+                </div>
+                
+                <div class="notification">
+                    <div class="notification-header">
+                        <span class="notification-icon">🧠</span>
+                        <span class="notification-app">GoStar</span>
+                        <span class="notification-time">
+                            <span class="lang-en">2h ago</span>
+                            <span class="lang-es">hace 2h</span>
+                        </span>
+                    </div>
+                    <div class="notification-body">
+                        <span class="lang-en">🎉 NEW PERSONAL BEST! Carlos hit 64 points!</span>
+                        <span class="lang-es">🎉 ¡NUEVO RÉCORD PERSONAL! ¡Carlos alcanzó 64 puntos!</span>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="family-tagline">
+                <span class="lang-en">From "Is mom okay?" to "Did you see mom's score today?!"</span>
+                <span class="lang-es">De "¿Mamá está bien?" a "¡¿Viste la puntuación de mamá hoy?!"</span>
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta">
+    <div class="container">
+        <h2>
+            <span class="lang-en">Ready to Start Training?</span>
+            <span class="lang-es">¿Listo para Comenzar a Entrenar?</span>
+        </h2>
+        <p>
+            <span class="lang-en">Experience the Metronome Sequence Memory Challenge</span>
+            <span class="lang-es">Experimenta el Desafío de Memoria de Secuencias con Metrónomo</span>
+        </p>
+        <a href="/login" class="cta-btn">
+            <span class="lang-en">GoStar!</span>
+            <span class="lang-es">¡GoStar!</span>
+        </a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <p>
+        <span class="lang-en">© 2025 GoStar Digital LLC · <a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Use</a></span>
+        <span class="lang-es">© 2025 GoStar Digital LLC · <a href="privacy.html">Política de Privacidad</a> · <a href="terms.html">Términos de Uso</a></span>
+    </p>
+</footer>
+
+<script>
+var currentLang = localStorage.getItem('gostar-lang') || 'en';
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('gostar-lang', lang);
+    document.body.setAttribute('data-lang', lang);
+    var btns = document.querySelectorAll('.lang-btn');
+    for (var i = 0; i < btns.length; i++) {
+        btns[i].className = btns[i].textContent === lang.toUpperCase() ? 'lang-btn active' : 'lang-btn';
+    }
+}
+
+// Initialize
+document.body.setAttribute('data-lang', currentLang);
+var btns = document.querySelectorAll('.lang-btn');
+for (var i = 0; i < btns.length; i++) {
+    btns[i].className = btns[i].textContent === currentLang.toUpperCase() ? 'lang-btn active' : 'lang-btn';
+}
+</script>
+
+</body>
+</html>
