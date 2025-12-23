@@ -31,19 +31,26 @@ function saveDatabase() {
 
 // Initialize database
 async function initDatabase() {
+    console.log('Initializing database...');
+    console.log('DB_PATH:', DB_PATH);
+    
     const SQL = await initSqlJs();
     
     // Load existing database or create new one
     if (fs.existsSync(DB_PATH)) {
+        console.log('Loading existing database from:', DB_PATH);
         const fileBuffer = fs.readFileSync(DB_PATH);
         db = new SQL.Database(fileBuffer);
         console.log('Database loaded from file');
     } else {
+        console.log('Creating new database');
         db = new SQL.Database();
         console.log('New database created');
     }
     
     // Initialize tables
+    console.log('Creating tables...');
+    
     db.run(`
         CREATE TABLE IF NOT EXISTS facilities (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -96,50 +103,74 @@ async function initDatabase() {
         )
     `);
     
+    console.log('Tables created');
+    
     // Create default admin if not exists
-    const adminCheck = db.exec("SELECT id FROM admin_users WHERE email = 'admin@gostardigital.com'");
-    console.log('Admin check result:', adminCheck);
-    if (adminCheck.length === 0 || adminCheck[0].values.length === 0) {
-        const hashedPassword = bcrypt.hashSync('GoStar2025!', 10);
-        db.run("INSERT INTO admin_users (email, password, name) VALUES (?, ?, ?)", 
-            ['admin@gostardigital.com', hashedPassword, 'GoStar Admin']);
-        console.log('Default admin created: admin@gostardigital.com / GoStar2025!');
-        saveDatabase();
-    } else {
-        console.log('Admin already exists');
+    try {
+        const adminCheck = db.exec("SELECT id FROM admin_users WHERE email = 'admin@gostardigital.com'");
+        console.log('Admin check result:', JSON.stringify(adminCheck));
+        
+        if (adminCheck.length === 0 || adminCheck[0].values.length === 0) {
+            console.log('Creating default admin...');
+            const hashedPassword = bcrypt.hashSync('GoStar2025!', 10);
+            db.run("INSERT INTO admin_users (email, password, name) VALUES (?, ?, ?)", 
+                ['admin@gostardigital.com', hashedPassword, 'GoStar Admin']);
+            console.log('Default admin created: admin@gostardigital.com / GoStar2025!');
+        } else {
+            console.log('Admin already exists');
+        }
+    } catch (err) {
+        console.error('Error checking/creating admin:', err);
     }
     
     saveDatabase();
+    console.log('Database saved to disk');
+    console.log('Database initialization complete');
 }
 
 // Helper functions for database queries
 function dbGet(sql, params = []) {
-    const stmt = db.prepare(sql);
-    stmt.bind(params);
-    if (stmt.step()) {
-        const row = stmt.getAsObject();
+    try {
+        const stmt = db.prepare(sql);
+        stmt.bind(params);
+        if (stmt.step()) {
+            const row = stmt.getAsObject();
+            stmt.free();
+            return row;
+        }
         stmt.free();
-        return row;
+        return null;
+    } catch (err) {
+        console.error('dbGet error:', err, 'SQL:', sql);
+        throw err;
     }
-    stmt.free();
-    return null;
 }
 
 function dbAll(sql, params = []) {
-    const stmt = db.prepare(sql);
-    stmt.bind(params);
-    const results = [];
-    while (stmt.step()) {
-        results.push(stmt.getAsObject());
+    try {
+        const stmt = db.prepare(sql);
+        stmt.bind(params);
+        const results = [];
+        while (stmt.step()) {
+            results.push(stmt.getAsObject());
+        }
+        stmt.free();
+        return results;
+    } catch (err) {
+        console.error('dbAll error:', err, 'SQL:', sql);
+        throw err;
     }
-    stmt.free();
-    return results;
 }
 
 function dbRun(sql, params = []) {
-    db.run(sql, params);
-    saveDatabase();
-    return { lastInsertRowid: db.exec("SELECT last_insert_rowid()")[0]?.values[0]?.[0] };
+    try {
+        db.run(sql, params);
+        saveDatabase();
+        return { lastInsertRowid: db.exec("SELECT last_insert_rowid()")[0]?.values[0]?.[0] };
+    } catch (err) {
+        console.error('dbRun error:', err, 'SQL:', sql);
+        throw err;
+    }
 }
 
 // Middleware
@@ -349,26 +380,31 @@ app.get('/admin/login', (req, res) => {
 });
 
 app.post('/api/admin/login', (req, res) => {
-    const { email, password } = req.body;
-    
-    console.log('Admin login attempt:', email);
-    
-    const admin = dbGet('SELECT * FROM admin_users WHERE email = ?', [email]);
-    console.log('Admin found:', admin ? 'yes' : 'no');
-    
-    if (admin && bcrypt.compareSync(password, admin.password)) {
-        req.session.user = {
-            type: 'admin',
-            id: admin.id,
-            name: admin.name,
-            email: admin.email
-        };
-        console.log('Admin login successful');
-        return res.json({ success: true, redirect: '/admin/dashboard' });
+    try {
+        const { email, password } = req.body;
+        
+        console.log('Admin login attempt:', email);
+        
+        const admin = dbGet('SELECT * FROM admin_users WHERE email = ?', [email]);
+        console.log('Admin found:', admin ? 'yes' : 'no');
+        
+        if (admin && bcrypt.compareSync(password, admin.password)) {
+            req.session.user = {
+                type: 'admin',
+                id: admin.id,
+                name: admin.name,
+                email: admin.email
+            };
+            console.log('Admin login successful');
+            return res.json({ success: true, redirect: '/admin/dashboard' });
+        }
+        
+        console.log('Admin login failed - invalid credentials');
+        return res.status(401).json({ error: 'Invalid credentials' });
+    } catch (err) {
+        console.error('Admin login error:', err);
+        return res.status(500).json({ error: 'Login error: ' + err.message });
     }
-    
-    console.log('Admin login failed');
-    return res.status(401).json({ error: 'Invalid credentials' });
 });
 
 app.get('/admin/dashboard', requireAdmin, (req, res) => {
